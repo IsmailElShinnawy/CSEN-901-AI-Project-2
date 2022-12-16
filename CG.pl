@@ -28,5 +28,16 @@ reverse_action(down, Current_Row, Col, Passengers, Ships, Previous_Row, Col, Pas
   Previous_Row is Current_Row-1,
   Previous_Row >= 0.
 
-  
+goal_test(S) :-
+  station(SRow, SCol),
+  coast_guard(SRow, SCol, 0, [], S).
 
+coast_guard(Row, Col, 0, Ships, s0) :-
+  agent_loc(Row, Col),
+  ships_loc(Initial_Ships),
+  sort(Ships, Sorted_Ships),
+  sort(Initial_Ships, Sorted_Ships).
+
+coast_guard(Row, Col, P, Ships, result(A, S)) :-
+  reverse_action(A, Row, Col, P, Ships, PRow, PCol, PP, PShips),
+  coast_guard(PRow, PCol, PP, PShips, S).
