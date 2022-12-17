@@ -1,43 +1,51 @@
-:- include('KB.pl').
-% :- include('KB2.pl').
+:-include('KB.pl').
+% :-include('KB2.pl').
 
-reverse_action(drop, Row, Col, 0, Ships, Row, Col, 1, Ships) :-
+action(drop, Row, Col, 0, Ships, Row, Col, 1, Ships):-
   station(Row, Col).
-reverse_action(drop, Row, Col, 0, Ships, Row, Col, 2, Ships) :-
-  capacity(MC),
-  MC = 2,
+action(drop, Row, Col, 0, Ships, Row, Col, 2, Ships):-
+  capacity(2),
   station(Row, Col).
-reverse_action(pickup, Row, Col, Current_Passengers, Current_Ships, Row, Col, Previous_Passengers, Previous_Ships) :-
-  \+ member([Row, Col], Current_Ships),
-  capacity(MC),
-  Current_Passengers =< MC,
-  Previous_Passengers is Current_Passengers-1,
-  append(Current_Ships, [[Row, Col]], Previous_Ships).
-reverse_action(right, Row, Current_Col, Passengers, Ships, Row, Previous_Col, Passengers, Ships) :- 
-  Previous_Col is Current_Col-1,
-  Previous_Col >= 0.
-reverse_action(left, Row, Current_Col, Passengers, Ships, Row, Previous_Col, Passengers, Ships) :- 
-  Previous_Col is Current_Col+1,
-  grid(_, M),
-  Previous_Col < M.
-reverse_action(up, Current_Row, Col, Passengers, Ships, Previous_Row, Col, Passengers, Ships) :- 
-  Previous_Row is Current_Row+1,
-  grid(N, _),
-  Previous_Row < N.
-reverse_action(down, Current_Row, Col, Passengers, Ships, Previous_Row, Col, Passengers, Ships) :- 
-  Previous_Row is Current_Row-1,
-  Previous_Row >= 0.
+action(pickup, Row, Col, Cap, Ships, Row, Col, PCap, PShips):-
+  capacity(MCap),
+  Cap =< MCap,
+  append(Ships, [[Row,Col]], PShips),
+  PCap is Cap - 1,
+  PCap >= 0.
+action(up, Row, Col, Cap, Ships, PRow, Col, Cap, Ships):-
+  PRow is Row + 1,
+  valid_cell(PRow, Col).
+action(left, Row, Col, Cap, Ships, Row, PCol, Cap, Ships):-
+  PCol is Col + 1,
+  valid_cell(Row, PCol).
+action(down, Row, Col, Cap, Ships, PRow, Col, Cap, Ships):-
+  PRow is Row - 1,
+  valid_cell(PRow, Col).
+action(right, Row, Col, Cap, Ships, Row, PCol, Cap, Ships):-
+  PCol is Col - 1,
+  valid_cell(Row, PCol).
 
-goal_test(S) :-
-  station(SRow, SCol),
-  coast_guard(SRow, SCol, 0, [], S).
+goal(S):-
+  ids(goal_test(S),15).
 
-coast_guard(Row, Col, 0, Ships, s0) :-
-  agent_loc(Row, Col),
-  ships_loc(Initial_Ships),
-  sort(Ships, Sorted_Ships),
-  sort(Initial_Ships, Sorted_Ships).
+goal_test(S):-
+  station(Row,Col),
+  coast_guard(Row,Col,0,[],S),
+  write(S),nl.
 
-coast_guard(Row, Col, P, Ships, result(A, S)) :-
-  reverse_action(A, Row, Col, P, Ships, PRow, PCol, PP, PShips),
-  coast_guard(PRow, PCol, PP, PShips, S).
+coast_guard(Row,Col,0,Ships,s0):-
+  agent_loc(Row,Col),
+  ships_loc(Ships).
+coast_guard(Row,Col,Cap,Ships,result(A,S)):-
+  action(A,Row,Col,Cap,Ships,PRow,PCol,PCap,PShips),
+  coast_guard(PRow,PCol,PCap,PShips,S).
+  
+% Helpers
+valid_cell(Row,Col):-
+  grid(N,M),
+  Row>=0,Row<N,
+  Col>=0,Col<M.
+
+ids(X,L):-
+  (call_with_depth_limit(X,L,R), number(R));
+  (call_with_depth_limit(X,L,R), R=depth_limit_exceeded,L1 is L+1, ids(X,L1)).

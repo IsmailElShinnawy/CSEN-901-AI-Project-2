@@ -1,3 +1,7 @@
+% . X .
+% . S P
+% . . P
+
 grid(3,3).
 agent_loc(0,1).
 ships_loc([[2,2],[1,2]]).
