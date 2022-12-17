@@ -26,26 +26,26 @@ action(right, Row, Col, Cap, Ships, Row, PCol, Cap, Ships):-
   valid_cell(Row, PCol).
 
 goal(S):-
-  ids(goal_test(S),15).
+  ids(goal_test(S), 15).
 
 goal_test(S):-
-  station(Row,Col),
-  coast_guard(Row,Col,0,[],S),
-  write(S),nl.
+  station(Row, Col),
+  coast_guard(Row, Col, 0, [], S),
+  write(S), nl.
 
-coast_guard(Row,Col,0,Ships,s0):-
-  agent_loc(Row,Col),
+coast_guard(Row, Col, 0, Ships, s0):-
+  agent_loc(Row, Col),
   ships_loc(Ships).
-coast_guard(Row,Col,Cap,Ships,result(A,S)):-
-  action(A,Row,Col,Cap,Ships,PRow,PCol,PCap,PShips),
-  coast_guard(PRow,PCol,PCap,PShips,S).
+coast_guard(Row, Col, Cap, Ships, result(A, S)):-
+  action(A, Row, Col, Cap, Ships, PRow, PCol, PCap, PShips),
+  coast_guard(PRow, PCol, PCap, PShips, S).
   
 % Helpers
-valid_cell(Row,Col):-
-  grid(N,M),
-  Row>=0,Row<N,
-  Col>=0,Col<M.
+valid_cell(Row, Col):-
+  grid(N, M),
+  Row>=0, Row<N,
+  Col>=0, Col<M.
 
-ids(X,L):-
-  (call_with_depth_limit(X,L,R), number(R));
-  (call_with_depth_limit(X,L,R), R=depth_limit_exceeded,L1 is L+1, ids(X,L1)).
+ids(X, L):-
+  (call_with_depth_limit(X, L, R), number(R));
+  (call_with_depth_limit(X, L, R), R = depth_limit_exceeded, L1 is L+1, ids(X, L1)).
