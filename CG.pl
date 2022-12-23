@@ -19,6 +19,7 @@ action(pickup, Row, Col, Cap, Ships, Row, Col, PCap, PShips):-
   capacity(MCap),
   Cap =< MCap,
   ships_loc(IShips),
+  \+ member([Row, Col], Ships),
   member([Row, Col], IShips),
   append(Ships, [[Row,Col]], PShips),
   length(PShips, CL),
