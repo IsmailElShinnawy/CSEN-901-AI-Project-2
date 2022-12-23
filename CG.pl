@@ -26,7 +26,7 @@ action(right, Row, Col, Cap, Ships, Row, PCol, Cap, Ships):-
   valid_cell(Row, PCol).
 
 goal(S):-
-  ids(goal_test(S), 15).
+  ids(goal_test(S), 0).
 
 goal_test(S):-
   station(Row, Col),
