@@ -30,8 +30,7 @@ goal(S):-
 
 goal_test(S):-
   station(Row, Col),
-  coast_guard(Row, Col, 0, [], S),
-  write(S), nl.
+  coast_guard(Row, Col, 0, [], S).
 
 coast_guard(Row, Col, 0, Ships, s0):-
   agent_loc(Row, Col),
