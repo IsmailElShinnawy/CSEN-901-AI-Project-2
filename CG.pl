@@ -8,9 +8,12 @@
   Actions definitions
 */
 action(drop, Row, Col, 0, Ships, Row, Col, 1, Ships):-
+  capacity(MCap),
+  1 =< MCap,
   station(Row, Col).
 action(drop, Row, Col, 0, Ships, Row, Col, 2, Ships):-
-  capacity(2),
+  capacity(MCap),
+  2 =< MCap,
   station(Row, Col).
 action(pickup, Row, Col, Cap, Ships, Row, Col, PCap, PShips):-
   capacity(MCap),
